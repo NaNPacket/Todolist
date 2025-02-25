@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>React Todo Uygulaması</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS CDN (Not: Üretim için yerel kurulum önerilir) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- React -->
@@ -64,64 +64,67 @@
             };
             
             return (
-                <li className={`flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition duration-200 border-l-4 ${todo.completed ? 'border-green-500' : 'border-blue-500'}`}>
-                    <div className="flex items-center gap-3 flex-1">
-                        <input
-                            type="checkbox"
-                            checked={todo.completed}
-                            onChange={() => toggleTodo(todo.id)}
-                            className="w-5 h-5 cursor-pointer accent-blue-500"
-                        />
+                React.createElement("li", {
+                    className: `flex items-center justify-between p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition duration-200 border-l-4 ${todo.completed ? 'border-green-500' : 'border-blue-500'}`
+                }, [
+                    React.createElement("div", { className: "flex items-center gap-3 flex-1", key: "main-content" }, [
+                        React.createElement("input", {
+                            type: "checkbox",
+                            checked: todo.completed,
+                            onChange: () => toggleTodo(todo.id),
+                            className: "w-5 h-5 cursor-pointer accent-blue-500",
+                            key: "checkbox"
+                        }),
                         
-                        {isEditing ? (
-                            <input
-                                type="text"
-                                value={editedText}
-                                onChange={(e) => setEditedText(e.target.value)}
-                                onBlur={handleEdit}
-                                onKeyDown={handleKeyDown}
-                                className="flex-1 p-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                autoFocus
-                            />
-                        ) : (
-                            <div className="flex flex-col flex-1">
-                                <span className={`${todo.completed ? 'line-through text-gray-500' : 'text-gray-800'} font-medium`}>
-                                    {todo.text}
-                                </span>
-                                {todo.category && (
-                                    <span className={`text-xs px-2 py-1 rounded-full mt-1 inline-block w-fit ${categoryColors[todo.category] || categoryColors["Diğer"]}`}>
-                                        {todo.category}
-                                    </span>
-                                )}
-                                {todo.dueDate && (
-                                    <span className="text-xs text-gray-500 mt-1">
-                                        <i className="fas fa-calendar-alt mr-1"></i>
-                                        {new Date(todo.dueDate).toLocaleDateString('tr-TR')}
-                                    </span>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                        isEditing ? 
+                            React.createElement("input", {
+                                type: "text",
+                                value: editedText,
+                                onChange: (e) => setEditedText(e.target.value),
+                                onBlur: handleEdit,
+                                onKeyDown: handleKeyDown,
+                                className: "flex-1 p-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500",
+                                autoFocus: true,
+                                key: "edit-input"
+                            })
+                        : 
+                            React.createElement("div", { className: "flex flex-col flex-1", key: "text-container" }, [
+                                React.createElement("span", {
+                                    className: `${todo.completed ? 'line-through text-gray-500' : 'text-gray-800'} font-medium`,
+                                    key: "text"
+                                }, todo.text),
+                                
+                                todo.category && React.createElement("span", {
+                                    className: `text-xs px-2 py-1 rounded-full mt-1 inline-block w-fit ${categoryColors[todo.category] || categoryColors["Diğer"]}`,
+                                    key: "category"
+                                }, todo.category),
+                                
+                                todo.dueDate && React.createElement("span", {
+                                    className: "text-xs text-gray-500 mt-1",
+                                    key: "due-date"
+                                }, [
+                                    React.createElement("i", { className: "fas fa-calendar-alt mr-1", key: "calendar-icon" }),
+                                    new Date(todo.dueDate).toLocaleDateString('tr-TR')
+                                ])
+                            ])
+                    ]),
                     
-                    <div className="flex gap-2">
-                        {!isEditing && (
-                            <button
-                                onClick={() => setIsEditing(true)}
-                                className="text-blue-500 hover:text-blue-700 transition duration-200 p-1"
-                                title="Düzenle"
-                            >
-                                <i className="fas fa-edit"></i>
-                            </button>
-                        )}
-                        <button
-                            onClick={() => deleteTodo(todo.id)}
-                            className="text-red-500 hover:text-red-700 transition duration-200 p-1"
-                            title="Sil"
-                        >
-                            <i className="fas fa-trash-alt"></i>
-                        </button>
-                    </div>
-                </li>
+                    React.createElement("div", { className: "flex gap-2", key: "actions" }, [
+                        !isEditing && React.createElement("button", {
+                            onClick: () => setIsEditing(true),
+                            className: "text-blue-500 hover:text-blue-700 transition duration-200 p-1",
+                            title: "Düzenle",
+                            key: "edit-button"
+                        }, React.createElement("i", { className: "fas fa-edit" })),
+                        
+                        React.createElement("button", {
+                            onClick: () => deleteTodo(todo.id),
+                            className: "text-red-500 hover:text-red-700 transition duration-200 p-1",
+                            title: "Sil",
+                            key: "delete-button"
+                        }, React.createElement("i", { className: "fas fa-trash-alt" }))
+                    ])
+                ])
             );
         };
         
@@ -222,147 +225,141 @@
             const activeTodoCount = todos.filter(todo => !todo.completed).length;
             
             return (
-                <div className="max-w-2xl mx-auto">
-                    <div className="bg-white rounded-lg shadow-xl overflow-hidden">
-                        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6">
-                            <h1 className="text-3xl font-bold text-white text-center">Yapılacaklar Listesi</h1>
-                            <p className="text-blue-100 text-center mt-2">Görevlerinizi düzenleyin ve takip edin</p>
-                        </div>
+                React.createElement("div", { className: "max-w-2xl mx-auto" }, [
+                    React.createElement("div", { className: "bg-white rounded-lg shadow-xl overflow-hidden", key: "main-card" }, [
+                        React.createElement("div", { className: "bg-gradient-to-r from-blue-600 to-indigo-700 p-6", key: "header" }, [
+                            React.createElement("h1", { className: "text-3xl font-bold text-white text-center" }, "Yapılacaklar Listesi"),
+                            React.createElement("p", { className: "text-blue-100 text-center mt-2" }, "Görevlerinizi düzenleyin ve takip edin")
+                        ]),
                         
-                        <div className="p-6">
-                            <form onSubmit={handleSubmit} className="mb-6 space-y-4">
-                                <div className="flex gap-2">
-                                    <input
-                                        type="text"
-                                        value={inputValue}
-                                        onChange={(e) => setInputValue(e.target.value)}
-                                        placeholder="Yeni görev ekle..."
-                                        className="flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                    <button 
-                                        type="submit"
-                                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200 font-medium"
-                                    >
-                                        <i className="fas fa-plus mr-2"></i>Ekle
-                                    </button>
-                                </div>
+                        React.createElement("div", { className: "p-6", key: "content" }, [
+                            React.createElement("form", { onSubmit: handleSubmit, className: "mb-6 space-y-4", key: "form" }, [
+                                React.createElement("div", { className: "flex gap-2", key: "input-row" }, [
+                                    React.createElement("input", {
+                                        type: "text",
+                                        value: inputValue,
+                                        onChange: (e) => setInputValue(e.target.value),
+                                        placeholder: "Yeni görev ekle...",
+                                        className: "flex-1 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500",
+                                        key: "text-input"
+                                    }),
+                                    React.createElement("button", {
+                                        type: "submit",
+                                        className: "bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-200 font-medium",
+                                        key: "add-button"
+                                    }, [
+                                        React.createElement("i", { className: "fas fa-plus mr-2", key: "plus-icon" }),
+                                        "Ekle"
+                                    ])
+                                ]),
                                 
-                                <div className="flex flex-wrap gap-4">
-                                    <div className="flex-1 min-w-[200px]">
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                                        <select
-                                            value={category}
-                                            onChange={(e) => setCategory(e.target.value)}
-                                            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        >
-                                            <option value="">Kategori Seçin</option>
-                                            <option value="Kişisel">Kişisel</option>
-                                            <option value="İş">İş</option>
-                                            <option value="Alışveriş">Alışveriş</option>
-                                            <option value="Diğer">Diğer</option>
-                                        </select>
-                                    </div>
+                                React.createElement("div", { className: "flex flex-wrap gap-4", key: "form-options" }, [
+                                    React.createElement("div", { className: "flex-1 min-w-[200px]", key: "category-container" }, [
+                                        React.createElement("label", { className: "block text-sm font-medium text-gray-700 mb-1" }, "Kategori"),
+                                        React.createElement("select", {
+                                            value: category,
+                                            onChange: (e) => setCategory(e.target.value),
+                                            className: "w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        }, [
+                                            React.createElement("option", { value: "" }, "Kategori Seçin"),
+                                            React.createElement("option", { value: "Kişisel" }, "Kişisel"),
+                                            React.createElement("option", { value: "İş" }, "İş"),
+                                            React.createElement("option", { value: "Alışveriş" }, "Alışveriş"),
+                                            React.createElement("option", { value: "Diğer" }, "Diğer")
+                                        ])
+                                    ]),
                                     
-                                    <div className="flex-1 min-w-[200px]">
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Son Tarih</label>
-                                        <input
-                                            type="date"
-                                            value={dueDate}
-                                            onChange={(e) => setDueDate(e.target.value)}
-                                            className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        />
-                                    </div>
-                                </div>
-                            </form>
+                                    React.createElement("div", { className: "flex-1 min-w-[200px]", key: "date-container" }, [
+                                        React.createElement("label", { className: "block text-sm font-medium text-gray-700 mb-1" }, "Son Tarih"),
+                                        React.createElement("input", {
+                                            type: "date",
+                                            value: dueDate,
+                                            onChange: (e) => setDueDate(e.target.value),
+                                            className: "w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        })
+                                    ])
+                                ])
+                            ]),
                             
-                            <div className="flex justify-between items-center mb-4">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm text-gray-600">Göster:</span>
-                                    <div className="flex border rounded-lg overflow-hidden">
-                                        <button 
-                                            onClick={() => setFilter('all')} 
-                                            className={`px-3 py-1 text-sm ${filter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
-                                        >
-                                            Tümü
-                                        </button>
-                                        <button 
-                                            onClick={() => setFilter('active')} 
-                                            className={`px-3 py-1 text-sm ${filter === 'active' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
-                                        >
-                                            Aktif
-                                        </button>
-                                        <button 
-                                            onClick={() => setFilter('completed')} 
-                                            className={`px-3 py-1 text-sm ${filter === 'completed' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`}
-                                        >
-                                            Tamamlanan
-                                        </button>
-                                    </div>
-                                </div>
+                            React.createElement("div", { className: "flex justify-between items-center mb-4", key: "filters" }, [
+                                React.createElement("div", { className: "flex items-center gap-2" }, [
+                                    React.createElement("span", { className: "text-sm text-gray-600" }, "Göster:"),
+                                    React.createElement("div", { className: "flex border rounded-lg overflow-hidden" }, [
+                                        React.createElement("button", {
+                                            onClick: () => setFilter('all'),
+                                            className: `px-3 py-1 text-sm ${filter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`
+                                        }, "Tümü"),
+                                        React.createElement("button", {
+                                            onClick: () => setFilter('active'),
+                                            className: `px-3 py-1 text-sm ${filter === 'active' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`
+                                        }, "Aktif"),
+                                        React.createElement("button", {
+                                            onClick: () => setFilter('completed'),
+                                            className: `px-3 py-1 text-sm ${filter === 'completed' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'}`
+                                        }, "Tamamlanan")
+                                    ])
+                                ]),
                                 
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sm text-gray-600">Sırala:</span>
-                                    <select
-                                        value={sort}
-                                        onChange={(e) => setSort(e.target.value)}
-                                        className="p-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    >
-                                        <option value="created">Oluşturma Tarihi</option>
-                                        <option value="alphabetical">Alfabetik</option>
-                                        <option value="dueDate">Son Tarih</option>
-                                    </select>
-                                </div>
-                            </div>
+                                React.createElement("div", { className: "flex items-center gap-2" }, [
+                                    React.createElement("span", { className: "text-sm text-gray-600" }, "Sırala:"),
+                                    React.createElement("select", {
+                                        value: sort,
+                                        onChange: (e) => setSort(e.target.value),
+                                        className: "p-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    }, [
+                                        React.createElement("option", { value: "created" }, "Oluşturma Tarihi"),
+                                        React.createElement("option", { value: "alphabetical" }, "Alfabetik"),
+                                        React.createElement("option", { value: "dueDate" }, "Son Tarih")
+                                    ])
+                                ])
+                            ]),
                             
-                            {todos.length > 0 ? (
-                                <>
-                                    <ul className="space-y-3 mb-4">
-                                        {filteredAndSortedTodos.map(todo => (
-                                            <TodoItem 
-                                                key={todo.id}
-                                                todo={todo}
-                                                toggleTodo={toggleTodo}
-                                                deleteTodo={deleteTodo}
-                                                editTodo={editTodo}
-                                            />
-                                        ))}
-                                    </ul>
+                            todos.length > 0 ? 
+                                React.createElement("div", { key: "todos-container" }, [
+                                    React.createElement("ul", { className: "space-y-3 mb-4", key: "todo-list" },
+                                        filteredAndSortedTodos.map(todo => 
+                                            React.createElement(TodoItem, {
+                                                key: todo.id,
+                                                todo: todo,
+                                                toggleTodo: toggleTodo,
+                                                deleteTodo: deleteTodo,
+                                                editTodo: editTodo
+                                            })
+                                        )
+                                    ),
                                     
-                                    <div className="flex justify-between items-center text-sm text-gray-600 pt-4 border-t">
-                                        <div>
-                                            <span>{activeTodoCount} aktif görev</span>
-                                        </div>
+                                    React.createElement("div", { className: "flex justify-between items-center text-sm text-gray-600 pt-4 border-t", key: "list-footer" }, [
+                                        React.createElement("div", { key: "count" }, 
+                                            React.createElement("span", {}, `${activeTodoCount} aktif görev`)
+                                        ),
                                         
-                                        {todos.some(todo => todo.completed) && (
-                                            <button
-                                                onClick={clearCompleted}
-                                                className="text-red-500 hover:text-red-700 transition"
-                                            >
-                                                Tamamlananları Temizle
-                                            </button>
-                                        )}
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="flex flex-col items-center justify-center py-10 text-gray-500">
-                                    <i className="fas fa-clipboard-list text-5xl mb-4"></i>
-                                    <p className="text-center mb-2 font-medium">Henüz görev eklenmedi.</p>
-                                    <p className="text-center text-sm">Yeni bir görev eklemek için yukarıdaki formu doldurun.</p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                                        todos.some(todo => todo.completed) && 
+                                            React.createElement("button", {
+                                                onClick: clearCompleted,
+                                                className: "text-red-500 hover:text-red-700 transition",
+                                                key: "clear-button"
+                                            }, "Tamamlananları Temizle")
+                                    ])
+                                ])
+                            : 
+                                React.createElement("div", { className: "flex flex-col items-center justify-center py-10 text-gray-500", key: "empty-state" }, [
+                                    React.createElement("i", { className: "fas fa-clipboard-list text-5xl mb-4", key: "empty-icon" }),
+                                    React.createElement("p", { className: "text-center mb-2 font-medium", key: "empty-title" }, "Henüz görev eklenmedi."),
+                                    React.createElement("p", { className: "text-center text-sm", key: "empty-subtitle" }, "Yeni bir görev eklemek için yukarıdaki formu doldurun.")
+                                ])
+                        ])
+                    ]),
                     
-                    <div className="mt-6 text-center text-gray-500 text-sm">
-                        <p>© {new Date().getFullYear()} React Todo Uygulaması</p>
-                    </div>
-                </div>
+                    React.createElement("div", { className: "mt-6 text-center text-gray-500 text-sm", key: "footer" },
+                        React.createElement("p", {}, `© ${new Date().getFullYear()} React Todo Uygulaması`)
+                    )
+                ])
             );
         };
 
         // Uygulamayı başlat
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<TodoApp />);
+        root.render(React.createElement(TodoApp));
     </script>
 </body>
 </html>
